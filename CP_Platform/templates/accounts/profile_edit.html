@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Edit Profile | CP Drills
+{% endblock title %}
+
+{% block head %}
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div class="container my-3 w-75">
+        <div class="card col-sm-12 col-lg-6 mx-auto">
+            <div class="card-body shadow">
+                <h5 class="mx-auto text-uppercase my-2">Edit Profile</h5>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+                             role="alert">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <hr class="mb-2"/>
+                <form method="post" class="text-left">
+                    {% csrf_token %}
+                    <div>
+                        {{ user_form | crispy }}
+                    </div>
+
+                    <div>
+                        {{ userprofile_form | crispy }}
+                    </div>
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mt-4"/>
+                </form>
+                <hr/>
+                <div>
+                    <strong class="text-secondary"><a style="text-decoration: none" href="{% url 'password_change' %}">Change
+                        Password</a></strong>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

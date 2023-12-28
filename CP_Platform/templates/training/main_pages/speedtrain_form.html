@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+    Speed Training | CP Drills
+{% endblock title %}
+
+{% block head %}
+    <style>
+        ::-webkit-scrollbar {
+            -webkit-appearance: none;
+            width: 7px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, .5);
+            -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div class="alert alert-info text-center m-auto" role="alert">
+        Find problems using the problem picker below, solve them with or without the stopwatch, and repeat. View
+        analytics on your performance in the charts below. Please note that you have to manually stop the stopwatch.</a>
+    </div>
+
+    <div class="container-fluid mb-2">
+
+        <div class="row mt-3 justify-content-center">
+            <div class="col">
+                <div class="card-body shadow-lg">
+                    <h1 class="mx-auto">Get a Problem</h1>
+                    <small class="form-text text-muted">Provide a valid codeforces handle under your <a
+                            href="{% url 'profile_edit' %}">profile</a> to get personalised recommendations. Ignore this message if you have already done so.</small>
+
+                    <hr class="mb-2"/>
+                    <form method="post" class="">
+                        {% csrf_token %}
+
+                        <div id="div_id_rating" class="form-group">
+                            <div class="w-25">
+
+                                <label for="id_rating" class="requiredField">
+                                    {{ form.rating.label }}<span class="asteriskField">*</span>
+                                </label>
+
+                                <select name="rating" class="select form-control mt-1" id="id_rating">
+                                    {% for x,y in form.fields.rating.choices %}
+                                        <option value="{{ x }}">{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+
+                            </div>
+
+                            <small id="hint_id_rating"
+                                   class="form-text text-muted">{{ form.fields.rating.help_text }}</small>
+
+                        </div>
+
+                        {% if messages %}
+                            <div class="mt-2">
+                                {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger">
+                                            {{ message }}
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-{{ message.tags }}">
+                                            {{ message }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            {#                            <small#}
+                            {#                                    class="form-text text-muted">Choosing filters is optional.</small>#}
+                            <div class="col">
+                                <div class="mt-3" style="overflow-y: scroll; height: 21vh">
+                                    {{ form.topics|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="mt-3" style="height: 21vh; overflow-y: scroll">
+                                    <p>{{ form.contest_type|as_crispy_field }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="mt-3" style="height: 21vh; overflow-y: scroll">
+                                    <p>{{ form.problem_type|as_crispy_field }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="submit" value="Get Problem" class="btn btn-primary btn-block mt-3"/>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="card-body shadow-lg">
+                            <div class="d-flex justify-content-center">
+                                <h1>Solve a Problem</h1>
+                            </div>
+
+                            <div class="d-flex flex-column" style="font-size: 125%">
+                                <p>Name: {{ problem.name }}</p>
+                                <p>Rating: {{ problem.rating }} </p>
+                                <p>Link: <a href="{{ problem.link }}" id="problem_url"
+                                            target="_blank">{{ problem.link }}</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="card-body shadow-lg">
+                            <div class="d-flex justify-content-center">
+                                <h1>Stopwatch</h1>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-2">
+                                <p>
+                                    <label>Hours</label><input value="00"
+                                                               id="hours"
+                                                               class="mx-2"
+                                                               style="width: 30px">
+                                    :
+                                    <label>Minutes</label><input
+                                        value="00" id="minutes" class="mx-2"
+                                        style="width: 30px">
+                                    :
+                                    <label>Seconds</label><input
+                                        id="seconds" value="00" class="mx-2"
+                                        style="width: 30px">
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <p id="progress_para1">Press 'Save Progress' to save the time displayed on the
+                                    stopwatch. Leave it at its default value if you do not wish to save the time.
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button id="button-start" class="btn btn-success mx-1">Start</button>
+                                <button id="button-reset" class="btn btn-danger mx-1" style="display: none">Reset</button>
+                                <button id="button-stop" class="btn btn-warning mx-1" style="display: none">Pause</button>
+                                <button id="button-save" class="btn btn-info mx-1" value="{{ problem.code }}">Save
+                                    Progress
+                                </button>
+                                <button id="button-delete" class="btn btn-danger mx-1" value="{{ problem.code }}">
+                                    Delete Progress
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card-body shadow-lg" style="border: 1px solid;">
+                        {{ graph_time_date|safe }}
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card-body shadow-lg" style="border: 1px solid;">
+                        {{ graph_bar_count|safe }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card-body shadow-lg" style="border: 1px solid;">
+                        {{ graph1|safe }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'javascript/HackTimer.js' %}"></script>
+    <script>
+        window.onload = function () {
+            document.querySelector('[data-title="Autoscale"]').click()
+
+            let seconds = 0;
+            let hours = 0;
+            let tens = 0;
+            let minutes = 0;
+            let appendTens = 0;
+            let appendSeconds = document.getElementById("seconds")
+            let appendMinutes = document.getElementById("minutes")
+            let appendHours = document.getElementById("hours")
+            let buttonStart = document.getElementById('button-start');
+            let buttonStop = document.getElementById('button-stop');
+            let buttonReset = document.getElementById('button-reset');
+            let buttonSave = document.getElementById('button-save');
+            let buttonDelete = document.getElementById('button-delete');
+            let problemLink = document.getElementById('problem_url');
+            let Interval;
+            let running = false;
+            let clicked_before = false;
+
+            problemLink.onclick = function () {
+                if (clicked_before) return;
+                clicked_before = true;
+
+                buttonStart.click()
+            }
+
+            buttonStart.onclick = function () {
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 10);
+                running = true;
+
+                buttonStart.style.display = "none";
+                buttonReset.style.display = "none";
+                buttonSave.style.display = "none";
+                buttonDelete.style.display = "none";
+                buttonStop.style.display = "block";
+
+
+                seconds = parseInt(document.getElementById("seconds").value);
+                minutes = parseInt(document.getElementById("minutes").value);
+                hours = parseInt(document.getElementById("hours").value);
+            }
+
+            buttonStop.onclick = function () {
+                clearInterval(Interval);
+                running = false;
+
+                buttonStart.style.display = "block";
+                buttonStart.innerHTML = "Resume";
+                buttonSave.style.display = "block";
+                buttonReset.style.display = "block";
+                buttonDelete.style.display = "block";
+                buttonStop.style.display = "none";
+                buttonSave.style.display = "block";
+            }
+
+            buttonSave.onclick = function () {
+                buttonDelete.style.display = "block";
+            }
+
+            buttonReset.onclick = function () {
+                clearInterval(Interval);
+                tens = 0;
+                seconds = 0;
+                minutes = 0;
+                hours = 0;
+                appendTens.value = "00";
+                appendSeconds.value = "00";
+                appendMinutes.value = "00";
+                appendHours.value = "00";
+
+                buttonStart.style.display = "block";
+                buttonStart.innerHTML = "Start";
+                buttonSave.style.display = "block";
+                buttonReset.style.display = "none";
+                buttonDelete.style.display = "block";
+                buttonStop.style.display = "none";
+            }
+
+            function startTimer() {
+                tens++;
+
+                if (tens <= 9)
+                    appendTens.value = "0" + tens;
+
+                if (tens > 9)
+                    appendTens.value = tens;
+
+                if (minutes > 59) {
+                    hours++;
+                    appendHours.value = hours;
+                    minutes = 0;
+                    appendMinutes.value = "0" + 0;
+                }
+
+                if (seconds > 59) {
+                    minutes++;
+                    appendMinutes.value = minutes;
+                    seconds = 0;
+                    appendSeconds.value = "0" + 0;
+                }
+
+                if (tens > 99) {
+                    console.log("seconds");
+                    seconds++;
+                    appendSeconds.value = "0" + seconds;
+                    tens = 0;
+                    appendTens.value = "0" + 0;
+                }
+
+                if (seconds > 9) {
+                    appendSeconds.value = seconds;
+                }
+
+                if (minutes < 9) appendMinutes.value = "0" + minutes;
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+        $(function () {
+            $(document).on('click', 'button', function () {
+                    let problem_code = $(this).val();
+                    let button_type = $(this).attr('id');
+
+                    let inp_sec = parseInt(document.getElementById("seconds").value)
+                    let inp_hours = parseInt(document.getElementById("hours").value)
+                    let inp_minutes = parseInt(document.getElementById("minutes").value)
+
+                    if (inp_sec < 0 || inp_sec > 59 || inp_minutes < 0 || inp_minutes > 59 || inp_hours < 0) {
+                        alert("Please check the values in the stopwatch. They must not be negative and the minutes and seconds fields must have values smaller than or equal to 59.")
+                        return;
+                    }
+
+                    if (problem_code.length <= 0) return;
+
+
+                    if (button_type === "button-save") {
+
+                        $.ajax({
+                            url: '/ajax/update_status',
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                'problem_code': problem_code,
+                                'action': 'save',
+                                'hours': document.getElementById("hours").value,
+                                'minutes': document.getElementById("minutes").value,
+                                'seconds': document.getElementById("seconds").value,
+                                'speed_attempt': 'True'
+                            },
+                            dataType: 'json',
+
+                            success: function (result) {
+                                document.getElementById("progress_para1").innerText = "Saved Progress: "
+                                    + document.getElementById("hours").value +
+                                    " hours, " + document.getElementById("minutes").value + " minutes, " +
+                                    document.getElementById("seconds").value + " seconds";
+
+                                {#document.getElementById("progress_para2").style.display = "block";#}
+                                {#document.getElementById("progress_para2").innerText = "Solved at " + result['solve_time'];#}
+                            }
+                        });
+                    } else if (button_type === "button-delete") {
+                        $.ajax({
+                            url: '/ajax/update_status',
+                            type: "POST",
+                            data: {
+                                'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                                'problem_code': problem_code,
+                                'action': 'delete',
+                                'hours': document.getElementById("hours").value,
+                                'minutes': document.getElementById("minutes").value,
+                                'seconds': document.getElementById("seconds").value
+                            },
+                            dataType: 'json',
+
+                            success: function (result) {
+                                document.getElementById("progress_para1").innerText = "Press 'Save Progress' to save the time displayed on the stopwatch. Leave it at its default value if you do not wish to save the time."
+                                {#document.getElementById("progress_para2").style.display = "none";#}
+                            }
+                        });
+                    }
+                }
+            )
+            ;
+        });
+    </script>
+{% endblock scripts %}
