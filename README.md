@@ -26,4 +26,6 @@ $ uvicorn cf_api_server:app --host 0.0.0.0 --port 8080
 $ cd cpdrills
 $ python manage.py runserver
 ```
+8. Open the website, login with your superuser account, and add your Codeforces handle to your profile. You may need to navigate to /admin and update your superuser profile's details if you cannot directly save your profile.
+
 Note: If something breaks, it is likely that a path or URL needs to be updated. Just follow the error and change the required paths. Check the FastAPI endpoint.
