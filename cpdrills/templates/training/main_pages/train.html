@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load training_extras %}
+
+{% block title %}
+    Train | CP Drills
+{% endblock title %}
+
+{% block content %}
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <div class="d-flex justify-content-center alert alert-danger">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="d-flex justify-content-center alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container-fluid">
+
+    <div class="d-flex justify-content-center">
+        <h1>Training</h1>
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-xl-3">
+            <a href="{% url 'speed_train' %}" style="text-decoration: none">
+                <div class="card text-white bg-info text-white shadow-lg">
+                    <div class="card-body">
+                        <p class="m-0">Speed Training</p>
+                        <p class="text-white-50 small m-0">Solve problems with a stopwatch.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+{#        <div class="col-md-6 col-xl-3" style="opacity: 60%">#}
+{#            <a href="#" style="text-decoration: none">#}
+{#                <div class="card bg-secondary text-white shadow-lg">#}
+{#                    <div class="card-body">#}
+{#                        <p class="m-0">Skill Training</p>#}
+{#                        <p class="text-white-50 small m-0">Coming soon</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </a>#}
+{#        </div>#}
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <h1>Topic Practice</h1>
+    </div>
+
+    <div class="row justify-content-center">
+
+        {% for topic in topics %}
+            <div class="col-md-6 col-xl-3">
+                <a href="/train/practice/{{ topic }}/Beginner" style="text-decoration: none">
+                    <div class="card bg-danger text-white shadow-lg">
+                        <div class="card-body">
+                            <p class="m-0">{{ topic }}</p>
+                            <p class="text-white-50 small m-0">Solved:&nbsp;{{ dp_cnt }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+
+{#        <div class="col-md-6 col-xl-3" style="opacity: 60%">#}
+{#            <a href="#" style="text-decoration: none">#}
+{#                <div class="card bg-secondary text-white shadow-lg">#}
+{#                    <div class="card-body">#}
+{#                        <p class="m-0">Graph Theory</p>#}
+{#                        <p class="text-white-50 small m-0">Coming Soon</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </a>#}
+{#        </div>#}
+{##}
+{##}
+{#        <div class="col" style="opacity: 60%">#}
+{#            <a href="#" style="text-decoration: none">#}
+{#                <div class="card bg-secondary text-white shadow-lg">#}
+{#                    <div class="card-body">#}
+{#                        <p class="m-0">Binary Search</p>#}
+{#                        <p class="text-white-50 small m-0">Coming Soon</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </a>#}
+{#        </div>#}
+{##}
+{#        <div class="col" style="opacity: 60%">#}
+{#            <a href="#" style="text-decoration: none">#}
+{#                <div class="card bg-secondary text-white shadow-lg">#}
+{#                    <div class="card-body">#}
+{#                        <p class="m-0">Data Structures</p>#}
+{#                        <p class="text-white-50 small m-0">Coming Soon</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </a>#}
+{#        </div>#}
+{##}
+{#        <div class="col" style="opacity: 60%">#}
+{#            <a href="#" style="text-decoration: none">#}
+{#                <div class="card bg-secondary text-white shadow-lg">#}
+{#                    <div class="card-body">#}
+{#                        <p class="m-0">Brute Force</p>#}
+{#                        <p class="text-white-50 small m-0">Coming Soon</p>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </a>#}
+{#        </div>#}
+
+
+        <div class="d-flex justify-content-center mt-3">
+            <h1>Analytics</h1>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-xl-3 mb-4">
+                <div class="card shadow-lg border-start-primary py-2" style="border: 1px solid black">
+                    <div class="card-body">
+                        <div class="row align-items-center no-gutters">
+                            <div class="col me-2">
+                                <div class="text-uppercase text-primary fw-bold text-xs mb-1" style="font-size: 80%">
+                                    <span>total problems solved</span>
+                                </div>
+                                <div class="text-dark fw-bold h5 mb-0"><span>{{ total_cnt }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center">
+
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid; overflow: auto">
+                    {{ graph_time_date|safe }}
+                </div>
+
+            </div>
+
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid;">
+                    {{ graph_solved_bar|safe }}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid; overflow: auto">
+                    {{ graph_speed|safe }}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mt-4 p-2">
+            <div class="col d-flex justify-content-center">
+                <div class="card shadow-lg w-100" style="border: 1px solid black;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <h3>Solve History</h3>
+                        </div>
+                        <div class="table-responsive table mt-2" id="dataTable" role="grid"
+                             aria-describedby="dataTable_info">
+                            <table class="table my-0" id="dataTable">
+                                <thead>
+                                <tr>
+                                    <th>Problem</th>
+                                    <th>Source</th>
+                                    <th>Codeforces Rating</th>
+                                    <th>Speed Training</th>
+                                    <th>Time (HH:MM:SS)</th>
+                                    <th>Date</th>
+                                    {#                                        <th>Solution</th>#}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for prob in page_obj %}
+                                    <tr id="tr_{{ problem.prob.code }}">
+                                        <td><a href="{{ prob.problem.link }}"
+                                               style="color: lightcoral; text-decoration: none">{{ prob.problem.name | capfirst }}
+                                        </a></td>
+                                        <td>{{ prob.problem.source }}</td>
+                                        <td>{% if prob.problem.rating is -1 %} N.A. {% else %}
+                                            {{ prob.problem.rating }} {% endif %}</td>
+                                        <td>{{ prob.speed_attempt }}</td>
+
+                                        {% with problem_status=prob.problem.code|check_solve:user.username %}
+                                            <td id="td_{{ prob.problem.code }}">{{ problem_status.1 }}</td>
+                                        {% endwith %}
+
+                                        <td>
+                                            <script>
+                                                document.write(new Date({{ prob.solve_time | get_js_timestamp }}).toLocaleString('en-IN'));
+                                            </script>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 align-self-center">
+                                <p id="dataTable_info" class="dataTables_info" role="status"
+                                   aria-live="polite">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                    <ul class="pagination">
+
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.previous_page_number }}"
+                                                                     aria-label="Previous"><span
+                                                    aria-hidden="true">«</span></a></li>
+                                        {% endif %}
+
+                                        <li class="page-item active"><a class="page-link"
+                                                                        href="#">{{ page_obj.number }}</a>
+                                        </li>
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.next_page_number }}"
+                                                                     aria-label="Next"><span
+                                                    aria-hidden="true">»</span></a></li>
+                                        {% endif %}
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block scripts %}
+{#    <script src="{% static 'javascript/training/main_pages/chart.min.js' %}"></script>#}
+
+    <script>
+        window.onload = function () {
+            document.querySelector('[data-title="Autoscale"]').click()
+        }
+    </script>
+{% endblock scripts %}

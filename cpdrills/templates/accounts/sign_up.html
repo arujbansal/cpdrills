@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Sign Up | CP Drills
+{% endblock title %}
+
+{% block head %}
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div class="alert alert-info text-center m-auto" role="alert">
+        Please check your spam folder for the verification email. Attempting to sign in again will resend the
+        verification email. If you still do not receive it, please reach out to us at <i>info.cpdrills@gmail.com</i>
+        with your
+        registered email.
+    </div>
+
+    <div class="container my-5 w-75">
+        <div class="card col-sm-12 col-lg-6 mx-auto">
+            <div class="card-body shadow">
+                <h5 class="mx-auto text-uppercase my-2">Sign up</h5>
+                <hr class="mb-4"/>
+                <form method="post" class="text-left">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <input type="submit" value="Sign up" class="btn btn-primary btn-block mt-3"/>
+                </form>
+                <hr/>
+                <strong class="text-secondary"><a href="{% url 'sign_in' %}"> Already have an account?</a></strong>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

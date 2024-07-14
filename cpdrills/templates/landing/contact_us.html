@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Contact Us | CP Drills
+{% endblock title %}
+
+{% block head %}
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-center mt-2 mb-4">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeiYPOJgBJyM9T4cZEQTRT06muYMrt6JfAp1eLUrPFEVWDlQA/viewform?embedded=true"
+                    width="640" height="1223" frameborder="0" marginheight="0" marginwidth="0">Loading…
+            </iframe>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    Sign In | CP Drills
+{% endblock title %}
+
+{{% block head %}
+    <style>
+        body {
+            background-color: whitesmoke;
+        }
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div class="alert alert-info text-center m-auto" role="alert">
+        Please check your spam folder for the verification email. Attempting to sign in again will resend the
+        verification email. If you still do not receive it, please reach out to us at <i>info.cpdrills@gmail.com</i>
+        with your
+        registered email.
+    </div>
+
+    <div class="container my-5 w-75">
+        <div class="card col-sm-12 col-lg-6 mx-auto">
+            <div class="card-body shadow">
+                <h5 class="mx-auto text-uppercase my-2">Sign In</h5>
+
+                {% if messages %}
+                    <div class="mt-2">
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger">
+                                    {{ message }}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <hr class="mb-2"/>
+                <form method="post" class="text-left">
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <input type="submit" value="Sign In" class="btn btn-primary btn-block mt-4"/>
+                </form>
+                <hr/>
+                <div>
+                    <strong class="text-secondary"><a style="text-decoration: none" href="{% url 'sign_up' %}">Register
+                        Here</a></strong>
+                    <br>
+                    <strong class="text-secondary"><a style="text-decoration: none" href="{% url 'password_reset' %}">Forgot
+                        Password?</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

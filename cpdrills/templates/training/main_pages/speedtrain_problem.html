@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col">
+                <div class="card-body shadow">
+                    <div class="d-flex justify-content-center">
+                        <h1>Problem</h1>
+                    </div>
+
+                    <div class="d-flex flex-column" style="font-size: 125%">
+                        <p>Name: {{ problem.name }}</p>
+                        <p>Rating: {{ problem.rating }} </p>
+                        <p>Link: <a href="{{ problem.url }}" id="problem_url" target="_blank">{{ problem.url }}</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card-body shadow">
+                    <div class="d-flex justify-content-center">
+                        <h1>Stopwatch</h1>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-2">
+                        <p>
+                            <input value="00" id="hours" class="mx-2">
+                            :
+                            <input value="00" id="minutes" class="mx-2">
+                            :
+                            <input id="seconds" value="00" class="mx-2">
+                        </p>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3">
+                        <button id="button-start" class="button btn-primary mx-1">Start</button>
+                        <button id="button-stop" class="button btn-primary mx-1">Stop</button>
+                        <button id="button-reset" class="button btn-primary mx-1">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'javascript/HackTimer.js' %}"></script>
+    <script>
+        window.onload = function () {
+            let seconds = 00;
+            let hours = 00;
+            let tens = "00";
+            let minutes = 00;
+            let appendTens = 00;
+            let appendSeconds = document.getElementById("seconds")
+            let appendMinutes = document.getElementById("minutes")
+            let appendHours = document.getElementById("hours")
+            let buttonStart = document.getElementById('button-start');
+            let buttonStop = document.getElementById('button-stop');
+            let buttonReset = document.getElementById('button-reset');
+            let problemLink = document.getElementById('problem_url');
+            let Interval;
+            let running = false;
+            let clicked_before = false;
+
+            problemLink.onclick = function () {
+                if (clicked_before) return;
+                clicked_before = true;
+
+                buttonStart.click()
+            }
+
+            buttonStart.onclick = function () {
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 10);
+                running = true;
+            }
+
+            buttonStop.onclick = function () {
+                clearInterval(Interval);
+                running = false;
+            }
+
+            buttonReset.onclick = function () {
+                clearInterval(Interval);
+                tens = "00";
+                seconds = "00";
+                minutes = "00";
+                hours = "00";
+                appendTens.value = tens;
+                appendSeconds.value = seconds;
+                appendMinutes.value = minutes;
+                appendHours.value = hours;
+            }
+
+            function startTimer() {
+                tens++;
+
+                if (tens <= 9)
+                    appendTens.value = "0" + tens;
+
+                if (tens > 9)
+                    appendTens.value = tens;
+
+                if (minutes > 59) {
+                    hours++;
+                    appendHours.value = hours;
+                    minutes = 0;
+                    appendMinutes.value = "0" + 0;
+                }
+
+                if (seconds > 59) {
+                    minutes++;
+                    appendMinutes.value = minutes;
+                    seconds = 0;
+                    appendSeconds.value = "0" + 0;
+                }
+
+                if (tens > 99) {
+                    console.log("seconds");
+                    seconds++;
+                    appendSeconds.value = "0" + seconds;
+                    tens = 0;
+                    appendTens.value = "0" + 0;
+                }
+
+                if (seconds > 9) {
+                    appendSeconds.value = seconds;
+                }
+
+                if (minutes > 0) appendMinutes.value = minutes;
+            }
+        }
+    </script>
+{% endblock scripts %}

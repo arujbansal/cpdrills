@@ -1,0 +1,12 @@
+Hi, {{ user.username }}!
+
+You're receiving this email because you created an account with this email at www.cpdrills.com.
+
+Please click the link below to verify your email:
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Thanks for using CP Drills!
+
+Aruj Bansal
+Founder of CP Drills

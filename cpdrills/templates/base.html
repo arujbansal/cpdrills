@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{% block title %} {% endblock title %}</title>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
+
+    <link rel="stylesheet" href="{% static 'fonts/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/simple-line-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/css_animate.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W999VGF4JK"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-W999VGF4JK');
+    </script>
+
+    {% block head %}
+
+    {% endblock head %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-dark navbar-expand-md sticky-top bg-dark p-3">
+    <div class="container-fluid"><a class="navbar-brand" href="{% url 'home' %}">CP Drills</a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span
+                class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse float-none justify-content-end" id="navcol-1">
+            <ul class="navbar-nav" style="margin-right: 10px;">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'train' %}">Train</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'speed_train' %}">Speed Training</a></li>
+                {#                <li class="nav-item"><a class="nav-link" href="#">Analyse</a></li>#}
+
+                {% if user is not None and user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'profile_edit' %}">Profile</a></li>
+                {% endif %}
+
+                <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact Us</a></li>
+
+                {% if user is not None and user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'logout' %}" type="button">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary" href="{% url 'sign_up' %}" type="button">Sign Up</a>
+                    </li>
+                    <li class="nav-item mt-2 mt-sm-0 ms-sm-2">
+                        <a class="btn btn-primary" href="{% url 'sign_in' %}" type="button">Sign In</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+
+        </div>
+    </div>
+</nav>
+
+<div>
+    {% block content %}
+
+    {% endblock content %}
+</div>
+
+<footer class="footer py-3 bg-dark text-white mt-auto">
+    <div class="container">
+        <div class="d-flex flex-column flex-sm-row">
+            <div class="me-sm-auto"><span class="text-muted">&copy; CP Drills</span></div>
+
+            <div class="d-flex flex-column flex-sm-row ms-sm-auto">
+                {#                <a class="me-sm-3" href="#" style="text-decoration: none">Terms and Conditions</a>#}
+                <a href="{% url 'privacy_policy' %}" style="text-decoration: none">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+{#<div class="container">#}
+{#    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">#}
+{#        <p class="col-md-4 mb-0 text-muted">&copy; CP Drills</p>#}
+{##}
+{#        <ul class="nav col-md-4 justify-content-end">#}
+{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Privacy Policy</a></li>#}
+{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Terms and Conditions</a></li>#}
+{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>#}
+{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>#}
+{#            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>#}
+{#        </ul>#}
+{#    </footer>#}
+{#</div>#}
+
+{#<main class="flex-shrink-0">#}
+{#    <div class="container">#}
+{#        <h1 class="mt-5">Sticky footer with fixed navbar</h1>#}
+{#        <p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A#}
+{#            fixed navbar has been added with <code class="small">padding-top: 60px;</code> on the <code class="small">main#}
+{#                &gt; .container</code>.</p>#}
+{#        <p>Back to <a href="/docs/5.0/examples/sticky-footer/">the default sticky footer</a> minus the navbar.</p>#}
+{#    </div>#}
+{#</main>#}
+
+{#<script src="{% static 'javascript/jquery-3.3.1.slim.js' %}"></script>#}
+{#<script src="{% static 'javascript/ajax_libs_popper.js_1.14.7_umd_popper.js' %}"></script>#}
+{#<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>#}
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+<script src="{% static 'javascript/bs-init.js' %}"></script>
+
+{% block scripts %}
+
+{% endblock scripts %}
+
+</body>
+
+</html>

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} CP Drills {% endblock title %}
+
+{% block content %}
+
+    {% if messages %}
+        <section class="text-center">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} m-auto"
+                     role="alert">{{ message }}</div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
+    <section class="p-1 text-white" style="background-color: rgb(33,37,41); min-height: 42vh">
+        <div class="container">
+            <div class="d-flex flex-sm-row flex-column mt-3">
+                <div class="me-sm-auto" style="max-width: 80ch">
+                    <div class="text-sm-start text-center">
+                        <h1 style="margin-bottom: -2px">Master Competitive Programming</h1>
+                        <p style="font-weight: bold;">Learn fast. Solve faster.</p>
+                    </div>
+
+                    <span class="text-start">
+                        <p>Sometimes, there is a sharp rise in difficulty between two consecutive problems in a contest, which results in a large part of the ranklist being decided on the basis of speed on earlier problems.</p>
+                        <p>CP Drills enables you to improve your speed by providing problems to solve against a stopwatch, and presents to you various analytics on your progress in the form of graphs.</p>
+                        <p>It also contains curated, handpicked problem sets on popular topics such as dynamic programming.</p>
+                    </span>
+
+
+                    <div class="text-sm-start text-center">
+                        {% if not user.is_authenticated %}
+                            <a class="btn btn-primary me-2" href="{% url 'sign_up' %}" type="button">Sign
+                                Up</a>
+                            <a class="btn btn-primary" href="{% url 'sign_in' %}" type="button">Sign In</a>
+                        {% else %}
+                            <p class="text-warning">Hi, {{ user.username }}. Head over to the training pages to start
+                                practising!</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div class="d-flex flex-column flex-sm-row ms-sm-auto my-sm-auto mt-4">
+                    <div class="my-sm-auto text-justify ms-sm-3 mt-2 mx-auto text-danger" style="max-width: 30ch">
+                        <h5 style="margin-bottom: -2px">Important Note</h5>
+                        <p class="font-weight-light mb-0 mt-3">
+                            CP Drills is no longer maintained and therefore may not work. You can find the source code and usage guide at and run CP Drills locally. Good luck and have fun with your practice!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="text-center bg-white features-icons" style="padding: 11px;">
+        <div class="container">
+            <div class="row justify-content-evenly">
+                <div class="col-lg-6 col-xl-4">
+                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                        <div class="d-flex features-icons-icon"><i class="icon-speedometer m-auto text-primary"
+                                                                   data-bss-hover-animate="pulse"></i></div>
+                        <h3>Become Faster</h3>
+                        <p class="lead mb-0">Speed drills for all levels.</p>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-xl-4">
+                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                        <div class="d-flex features-icons-icon"><i class="icon-calculator m-auto text-primary"
+                                                                   data-bss-hover-animate="pulse"></i></div>
+                        <h3>Monitor Your Progress</h3>
+                        <p class="lead mb-0">Powerful analytics for your skill and speed progress.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xl-4">
+                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
+                        <div class="d-flex features-icons-icon"><i class="icon-book-open m-auto text-primary"
+                                                                   data-bss-hover-animate="pulse"></i></div>
+                        <h3>Practice Concepts</h3>
+                        <p class="lead mb-0">Curated list of high quality problems.</p>
+                    </div>
+                </div>
+                {#                <div class="col-lg-4 col-xl-4">#}
+                {#                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">#}
+                {#                        <div class="d-flex features-icons-icon"><i class="icon-book-open m-auto text-primary"#}
+                {#                                                                   data-bss-hover-animate="pulse"></i></div>#}
+                {#                        <h3>Filter Codeforces Problems</h3>#}
+                {#                        <p class="lead mb-0">Find relevant codeforces problems specifying tags and contest#}
+                {#                            divisions.</p>#}
+                {#                    </div>#}
+                {#                </div>#}
+
+                {#                <hr>#}
+                {#                <div class="col-lg-4 col-xl-4">#}
+                {#                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">#}
+                {#                        <div class="d-flex features-icons-icon"><i class="icon-calculator m-auto text-primary"#}
+                {#                                                                   data-bss-hover-animate="pulse"></i></div>#}
+                {#                        <h3>Compare Against Others</h3>#}
+                {#                        <p class="lead mb-0">Your performance compared to benchmarks. (Coming Soon)</p>#}
+                {#                    </div>#}
+                {#                </div>#}
+                {##}
+                {#                <div class="col-lg-5 col-xl-4">#}
+                {#                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">#}
+                {#                        <div class="d-flex features-icons-icon"><i class="icon-graph m-auto text-primary"#}
+                {#                                                                   data-bss-hover-animate="pulse"></i></div>#}
+                {#                        <h3>Optimise Your Learning</h3>#}
+                {#                        <p class="lead mb-0">Personalised learning path with problems from multiple#}
+                {#                            platforms. (Coming Soon)</p>#}
+                {#                    </div>#}
+                {#                </div>#}
+            </div>
+        </div>
+    </section>
+
+{#    <section class="section text-white p-3" style="background-color: rgb(33,37,41)">#}
+{#        <div class="container">#}
+{#            <div class="d-flex flex-md-row flex-column">#}
+{##}
+{#                <div class="d-flex flex-column flex-sm-row my-sm-auto my-auto">#}
+{#                    <div class="my-auto ms-lg-0 mx-auto">#}
+{#                        <img class="img-fluid rounded-circle" src="{% static 'images/aruj_bansal.jpeg' %}"#}
+{#                             alt="Aruj Bansal">#}
+{#                    </div>#}
+{##}
+{#                    <div class="my-sm-auto text-center ms-sm-3 mt-2 ms-auto" style="max-width: 50ch">#}
+{#                        <h5 style="margin-bottom: -2px">Aruj Bansal</h5>#}
+{#                        <small style="font-weight: bold">Founder</small>#}
+{#                        <br>#}
+{#                        <small style="font-weight: bold">Indian National Olympiad in#}
+{#                            Informatics Silver Medalist</small>#}
+{#                        <p class="font-weight-light mb-0 mt-3">"CP Drills is one of the many ways by which I give#}
+{#                            back to the wonderful competitive programming community. Apart from writing educational#}
+{#                            blogs on Codeforces, I also teach on my YouTube channel <a#}
+{#                                    href='https://www.youtube.com/c/AlgorithmsConquered/videos' style="color: #f0f867">Algorithms#}
+{#                                Conquered</a>."#}
+{#                        </p>#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{##}
+{#                <div class="d-flex flex-column flex-sm-col mt-3 mx-auto my-auto">#}
+{##}
+{#                    <div class="d-flex flex-column mt-3 my-auto">#}
+{#                        <h1 class="mx-auto my-auto">Statistics</h1>#}
+{#                    </div>#}
+{##}
+{#                    <div class="d-flex flex-column">#}
+{#                        <div class="d-flex flex-column mx-auto my-auto">#}
+{#                            <h1 class="text-warning">{{ user_cnt }} Users</h1>#}
+{#                        </div>#}
+{##}
+{#                        <div class="d-flex flex-column mx-auto my-auto">#}
+{#                            <h1 class="text-warning">{{ countries_cnt }} Countries</h1>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </section>#}
+
+    <section class="section">
+        <div class="container-fluid p-3">
+            <div class="d-flex">
+                <h1 class="mx-auto mt-3">Training Pages</h1>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row mt-3">
+                <div class="me-sm-4 mb-sm-0">
+                    <img class="img-fluid mt-1" src="{% static 'images/speedtrain.png' %}"
+                         alt="Speed Training">
+                </div>
+
+                <div class="">
+                    <img class="img-fluid mt-3 mt-sm-1" src="{% static 'images/analytics.png' %}"
+                         alt="Speed Training Analytics">
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row mt-3">
+                <div class="me-sm-4 mb-sm-0">
+                    <img class="img-fluid mt-1" src="{% static 'images/dynamic_prog.png' %}"
+                         alt="Dynamic Programming">
+                </div>
+
+                <div class="">
+                    <img class="img-fluid mt-3 mt-sm-1 mx-auto" src="{% static 'images/solves.png' %}"
+                         alt="Solve History">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

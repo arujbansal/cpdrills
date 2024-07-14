@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Privacy Policy | CP Drills
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-center mt-4 mb-3">
+            <embed src="{% static 'pdf/privacypolicy.pdf' %}" width="1000" height="800">
+        </div>
+    </div>
+{% endblock content %}

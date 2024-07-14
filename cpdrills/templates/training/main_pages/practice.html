@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load training_extras %}
+
+{% block title %}
+    Dynamic Programming | CP Drills
+{% endblock title %}
+
+{% block content %}
+    <div class="alert alert-info text-center m-auto" role="alert">
+        This page contains a curated set of problems for you to solve, with or without a stopwatch. After solving, you
+        have the option of selecting
+        the problem and saving the time.
+    </div>
+
+    <div class="container-fluid">
+        <div class="d-sm-flex justify-content-center align-items-center mb-4">
+            <h3 class="text-dark mb-0 mt-3">{{ topic }}</h3>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center">
+                            <h3>Select A Problem</h3>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        {{ cur_sub }}
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        {% for subcategory in subcategories %}
+                                            <a class="dropdown-item" href="{% url 'practice'  topic   subcategory %}">
+                                                {{ subcategory }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col align-self-center">
+                                <span style="float: left" class="mt-2">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                    <ul class="pagination">
+
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.previous_page_number }}"
+                                                                     aria-label="Previous"><span
+                                                    aria-hidden="true">«</span></a></li>
+                                        {% endif %}
+
+                                        <li class="page-item active"><a class="page-link"
+                                                                        href="#">{{ page_obj.number }}</a>
+                                        </li>
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.next_page_number }}"
+                                                                     aria-label="Next"><span
+                                                    aria-hidden="true">»</span></a></li>
+                                        {% endif %}
+
+                                    </ul>
+                                </nav>
+                            </div>
+
+                        </div>
+
+                        <div class="table table-responsive  mt-2" id="dataTable" role="grid"
+                             aria-describedby="dataTable_info" style="height: 37.5vh; overflow: scroll">
+                            <table class="table table-striped table-sm my-0" id="dataTable">
+                                <thead>
+                                <tr>
+                                    <th>Problem</th>
+                                    <th>Source</th>
+                                    {#                                    <th>Tags</th>#}
+                                    <th>Toggle</th>
+                                    <th>Time</th>
+                                    {#                                        <th>Solution</th>#}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for problem in page_obj %}
+                                    {% with problem_status=problem.code|check_solve:user.username %}
+                                        {% if problem_status.0 == "True" %}
+                                            <tr id="tr_{{ problem.code }}"
+                                                style="background-color: lightgreen">
+                                                {% else %}
+                                            <tr id="tr_{{ problem.code }}">
+                                        {% endif %}
+                                    <td><a href="{{ problem.link }}"
+                                           style="color: lightcoral; text-decoration: none"
+                                           id="a_{{ problem.code }}_link">{{ problem.name | capfirst }}
+                                    </a></td>
+                                    <td id="td_{{ problem.code }}_source">{{ problem.source }}</td>
+                                    {#                                    <td>{{ problem.tags }}</td>#}
+                                    <td>
+                                        <button class="btn btn-primary" id="{{ problem.code }}"
+                                                value="select"
+                                                type="button">
+                                            Select
+                                        </button>
+                                    </td>
+                                    <td id="td_{{ problem.code }}">{{ problem_status.1 }}</td>
+                                    </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-md-6 align-self-center">
+                                <p id="dataTable_info" class="dataTables_info" role="status"
+                                   aria-live="polite">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                                    <ul class="pagination">
+
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.previous_page_number }}"
+                                                                     aria-label="Previous"><span
+                                                    aria-hidden="true">«</span></a></li>
+                                        {% endif %}
+
+                                        <li class="page-item active"><a class="page-link"
+                                                                        href="#">{{ page_obj.number }}</a>
+                                        </li>
+                                        {% if page_obj.has_next %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.next_page_number }}"
+                                                                     aria-label="Next"><span
+                                                    aria-hidden="true">»</span></a></li>
+                                        {% endif %}
+
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <div class="card-body shadow-lg">
+                            <div class="d-flex justify-content-center">
+                                <h1>Solve a Problem</h1>
+                            </div>
+
+                            <div class="d-flex flex-column" style="font-size: 125%">
+                                <p id="p_name">Name:</p>
+                                <p id="p_source">Source:</p>
+                                <p id="p_link">Link:<a href="{{ problem.link }}" id="problem_url"
+                                                       target="_blank">{{ problem.link }}</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="card-body shadow-lg">
+                            <div class="d-flex justify-content-center">
+                                <h1>Stopwatch</h1>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-2">
+                                <p>
+                                    <label>Hours</label><input value="00"
+                                                               id="hours"
+                                                               class="mx-2"
+                                                               style="width: 30px">
+                                    :
+                                    <label>Minutes</label><input
+                                        value="00" id="minutes" class="mx-2"
+                                        style="width: 30px">
+                                    :
+                                    <label>Seconds</label><input
+                                        id="seconds" value="00" class="mx-2"
+                                        style="width: 30px">
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <p id="progress_para1">Select a problem and press 'Save Progress' to save
+                                    the time
+                                    displayed on the
+                                    stopwatch. Leave the stopwatch at its default value if you do not wish
+                                    to save
+                                    the time.
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-3">
+                                <button id="button-reset" class="btn btn-danger mx-1">Reset</button>
+                                <button id="button-start" class="btn btn-success mx-1">Start</button>
+                                <button id="button-stop" class="btn btn-warning mx-1">Pause</button>
+                                <button id="button-save" class="btn btn-success mx-1"
+                                        value="{{ problem.code }}">
+                                    Save
+                                    Progress
+                                </button>
+                                <button id="button-delete" class="btn btn-danger mx-1"
+                                        value="{{ problem.code }}">
+                                    Delete Progress
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid;">
+                    {{ graph_time_date|safe }}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid;">
+                    {{ graph_bar_count|safe }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card-body shadow-lg" style="border: 1px solid;">
+                    {{ graph1|safe }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="{% static 'javascript/HackTimer.js' %}"></script>
+
+    <script>
+        window.onload = function () {
+            document.querySelector('[data-title="Autoscale"]').click()
+
+            let seconds = 0;
+            let hours = 0;
+            let tens = 0;
+            let minutes = 0;
+            let appendTens = 0;
+            let appendSeconds = document.getElementById("seconds")
+            let appendMinutes = document.getElementById("minutes")
+            let appendHours = document.getElementById("hours")
+            let buttonStart = document.getElementById('button-start');
+            let buttonStop = document.getElementById('button-stop');
+            let buttonReset = document.getElementById('button-reset');
+            let Interval;
+            let running = false;
+
+            buttonStart.onclick = function () {
+                clearInterval(Interval);
+                Interval = setInterval(startTimer, 10);
+                running = true;
+
+                seconds = parseInt(document.getElementById("seconds").value);
+                minutes = parseInt(document.getElementById("minutes").value);
+                hours = parseInt(document.getElementById("hours").value);
+            }
+
+            buttonStop.onclick = function () {
+                clearInterval(Interval);
+                running = false;
+            }
+
+            buttonReset.onclick = function () {
+                clearInterval(Interval);
+                tens = 0;
+                seconds = 0;
+                minutes = 0;
+                hours = 0;
+                appendTens.value = "00";
+                appendSeconds.value = "00";
+                appendMinutes.value = "00";
+                appendHours.value = "00";
+            }
+
+            function startTimer() {
+                tens++;
+
+                if (tens <= 9)
+                    appendTens.value = "0" + tens;
+
+                if (tens > 9)
+                    appendTens.value = tens;
+
+                if (minutes > 59) {
+                    hours++;
+                    appendHours.value = hours;
+                    minutes = 0;
+                    appendMinutes.value = "0" + 0;
+                }
+
+                if (seconds > 59) {
+                    minutes++;
+                    appendMinutes.value = minutes;
+                    seconds = 0;
+                    appendSeconds.value = "0" + 0;
+                }
+
+                if (tens > 99) {
+                    console.log("seconds");
+                    seconds++;
+                    appendSeconds.value = "0" + seconds;
+                    tens = 0;
+                    appendTens.value = "0" + 0;
+                }
+
+                if (seconds > 9) {
+                    appendSeconds.value = seconds;
+                }
+
+                if (minutes < 9) appendMinutes.value = "0" + minutes;
+            }
+        }
+    </script>
+
+    <script src="{% static 'javascript/jquery-3.6.0.js' %}"></script>
+    <script>
+        let selected_button = "null";
+
+        $(function () {
+            $(document).on('click', 'button', function () {
+                let problem_code = $(this).val();
+                let button_type = $(this).attr('id');
+
+                let inp_sec = parseInt(document.getElementById("seconds").value)
+                let inp_hours = parseInt(document.getElementById("hours").value)
+                let inp_minutes = parseInt(document.getElementById("minutes").value)
+
+                if (inp_sec < 0 || inp_sec > 59 || inp_minutes < 0 || inp_minutes > 59 || inp_hours < 0) {
+                    alert("Please check the values in the stopwatch. They must not be negative and the minutes and seconds fields must have values smaller than or equal to 59.")
+                    return;
+                }
+
+                if (problem_code === "select") {
+                    if (selected_button !== "null") {
+                        document.getElementById(selected_button).innerText = "Select";
+                        document.getElementById(selected_button).style.backgroundColor = "#0275d8";
+
+                        {#document.getElementById("p_name").innerText = "Name:";#}
+                        {#document.getElementById("p_rating").innerText = "Rating:";#}
+                        {#document.getElementById("p_link").innerText = "Link:";#}
+                    }
+
+                    console.log(selected_button)
+
+                    if (selected_button === button_type) {
+                        selected_button = "null";
+
+                        document.getElementById("p_name").innerText = "Name:";
+                        document.getElementById("p_source").innerText = "Source:";
+                        document.getElementById("p_link").innerText = "Link:";
+                        return;
+                    }
+
+                    selected_button = button_type;
+                    document.getElementById(selected_button).innerText = "Selected";
+                    document.getElementById(selected_button).style.backgroundColor = "#292b2c";
+
+                    document.getElementById("p_name").innerText = "Name: " + document.getElementById("a_" + selected_button + "_link").innerText;
+                    document.getElementById("p_source").innerText = "Source: " + document.getElementById("td_" + selected_button + "_source").innerText;
+                    let l = document.createElement('a');
+                    l.appendChild(document.createTextNode(document.getElementById("a_" + selected_button + "_link").href));
+                    l.href = document.getElementById("a_" + selected_button + "_link").href;
+                    l.target = "_blank";
+                    document.getElementById("p_link").innerHTML = "Link: ";
+                    document.getElementById("p_link").append(l);
+
+                    {#document.getElementById("p_name").innerText = "Name: + ";#}
+                    {#document.getElementById("p_rating").innerText = "Rating:";#}
+                    {#document.getElementById("p_link").innerText = "Link:";#}
+                }
+
+                if (button_type === "button-save" && selected_button !== "null") {
+                    $.ajax({
+                        url: '/ajax/update_status',
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            'problem_code': selected_button,
+                            'action': 'save',
+                            'hours': document.getElementById("hours").value,
+                            'minutes': document.getElementById("minutes").value,
+                            'seconds': document.getElementById("seconds").value,
+                            'speed_attempt': 'False'
+                        },
+                        dataType: 'json',
+
+                        success: function (result) {
+                            let hours = document.getElementById("hours").value;
+                            let minutes = document.getElementById("minutes").value;
+                            let seconds = document.getElementById("seconds").value;
+                            let total = hours + minutes + seconds;
+
+                            {#document.getElementById("progress_para1").innerText = "Saved Progress: "#}
+                            {#    + document.getElementById("hours").value +#}
+                            {#    " hours, " + document.getElementById("minutes").value + " minutes, " +#}
+                            {#    document.getElementById("seconds").value + " seconds";#}
+
+                            console.log(total);
+                            if (total === "000000") document.getElementById("td_" + selected_button).innerText = "Unknown";
+                            else document.getElementById("td_" + selected_button).innerText = document.getElementById("hours").value + ":" + document.getElementById("minutes").value + ":" + document.getElementById("seconds").value;
+
+                            {#document.getElementById("progress_para2").style.display = "block";#}
+                            {#document.getElementById("progress_para2").innerText = "Solved at " + result['solve_time'];#}
+                            document.getElementById("tr_" + selected_button).style.backgroundColor = "lightgreen";
+                        }
+                    });
+                } else if (button_type === "button-delete" && selected_button !== "null") {
+                    $.ajax({
+                        url: '/ajax/update_status',
+                        type: "POST",
+                        data: {
+                            'csrfmiddlewaretoken': "{{  csrf_token  }}",
+                            'problem_code': selected_button,
+                            'action': 'delete',
+                            'hours': document.getElementById("hours").value,
+                            'minutes': document.getElementById("minutes").value,
+                            'seconds': document.getElementById("seconds").value
+                        },
+                        dataType: 'json',
+
+                        success: function (result) {
+                            {#document.getElementById("progress_para1").innerText = "Select a problem and press 'Save Progress' to save the time displayed on the stopwatch. Leave the stopwatch at its default value if you do not wish to save the time.";#}
+                            document.getElementById("tr_" + selected_button).style.backgroundColor = "white";
+                            document.getElementById("td_" + selected_button).innerText = "";
+                            {#console.log(selected_button)#}
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script src="{% static 'javascript/HackTimer.js' %}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+{% endblock scripts %}
