@@ -1,6 +1,8 @@
 # cpdrills
 
-CP Drills (Competitive Programming Drills) was a platform I created to improve problem-solving speed by doing time practice and getting access to various analytics. It is no longer being maintained but all the source code is being made available.
+CP Drills (Competitive Programming Drills) is a training platform designed to help increase your problem-solving speed by giving you access to several analytics. Since it is no longer being maintained, its source code is open to the public. You can look at [screenshots](#screenshots) below or take a look at the website hosted [here](https://arujbansal.pythonanywhere.com/) but it is likely that you cannot access practice features here. You can download and run the code locally by following the [usage guide](#usage-guide).
+
+## Screenshots
 
 ## Usage Guide
 1. Clone this repository, create a python virtual environment, and install the requirements:
